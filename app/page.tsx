@@ -7,8 +7,8 @@ import FAQSection from "./landing/faqs";
 export default function Page() {
   return (
     <>
-     <PremiumCardSwapHero />
      <Cinema />
+     <PremiumCardSwapHero />
       <NivelSSMA />
        <FAQSection />
     </>

@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    // Muestra miniatura en el gutter + hover preview al pasar sobre rutas de imagen
+    "kisstkondoros.vscode-gutter-preview",
+    // Autocompletado y navegación a rutas de archivos en el código
+    "christian-kohler.path-intellisense"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  // Vista previa de imágenes al pasar el cursor / hacer Ctrl+Click
+  "editor.hover.enabled": "on",
+  "editor.hover.delay": 300,
+  "editor.gotoLocation.multipleDefinitions": "goto",
+
+  // La extensión Image Preview resuelve las rutas desde la raíz del proyecto
+  // para que "/img/..." y "@/public/img/..." muestren miniatura en el gutter + hover
+  "imagePreview.basePath": "${workspaceFolder}/public",
+  "imagePreview.maxWidth": 400,
+  "imagePreview.maxHeight": 300,
+
+  // Path Intellisense: autocompleta y permite navegar a archivos de imagen
+  "path-intellisense.absolutePathToWorkspace": true,
+  "typescript.preferences.importModuleSpecifier": "relative"
+}

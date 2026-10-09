@@ -3,29 +3,32 @@
 import React, { useEffect, useMemo, useRef } from "react";
 import gsap from "gsap";
 import Image from "next/image";
+import sele1Img from "@/public/img/sele1.jpg";
+import sele2Img from "@/public/img/sele2.jpg";
+import sele3Img from "@/public/img/sele3.jpg";
 
 const PremiumCardSwapHero = () => {
-  const width = 520;
-  const height = 680;
-  const cardDistance = 90;
-  const verticalDistance = 55;
+  const width = 400;
+  const height = 530;
+  const cardDistance = 70;
+  const verticalDistance = 45;
   const delay = 4500;
 
   const cards = useMemo(
     () => [
       {
-        image: "/img/sold.jpg",
-        title: "Fuerza que mueve montañas",
+        image: sele1Img,
+        title: "Hablidades técnicas",
         subtitle: "Impacto Digital Estratégico",
       },
       {
-        image: "/img/konst.jpg",
-       title: "Maquinaria que conquista todo",
+        image: sele2Img,
+       title: "Afinidad de experiencia",
        subtitle: "Impacto Digital Estratégico",
       },
       {
-        image: "/img/working.jpg",
-        title: "Poder sin límite en cada obra",
+        image: sele3Img,
+        title: "Habilidades blandas",
          subtitle: "Impacto Digital Estratégico",
       },
     ],
@@ -46,7 +49,7 @@ const PremiumCardSwapHero = () => {
     z: -i * 120,
     rotationZ: i * 3,
     scale: 1 - i * 0.04,
-    opacity: 1 - i * 0.12,
+    opacity: 1 - i * 0.06,
     zIndex: total - i,
   });
 
@@ -86,7 +89,7 @@ const PremiumCardSwapHero = () => {
         x: "+=140",
         y: "+=700",
         rotationZ: -12,
-        opacity: 0.35,
+        opacity: 0.7,
         duration: 1.15,
         ease: "power3.in",
       });
@@ -194,15 +197,17 @@ const PremiumCardSwapHero = () => {
     <section
       style={{
         width: "100%",
-        height: "100vh",
+        minHeight: "112vh",
         overflow: "hidden",
         background: "#14373F",
+        paddingBlock: "2.5rem",
+        boxSizing: "border-box",
       }}
     >
       <div
         style={{
           width: "100%",
-          height: "100%",
+          minHeight: "calc(112vh - 5rem)",
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
           alignItems: "center",
@@ -218,20 +223,18 @@ const PremiumCardSwapHero = () => {
           <h1
             style={{
               color: "#fff",
-              fontSize: "clamp(3rem,7vw,7rem)",
+              fontSize: "clamp(2rem,4vw,7rem)",
               lineHeight: 1.02,
               fontWeight: 800,
-              letterSpacing: "-0.1em",
               marginBottom: "1.5rem",
             }}
           >
-           La mejor
+           De la bandeja
             <br />
-            empresa
+            a la preselección
             <br />
-            peruana
+            en tres pasos
           </h1>
-
           <p
             style={{
               color: "rgba(255,255,255,0.68)",
@@ -266,7 +269,7 @@ const PremiumCardSwapHero = () => {
                 height: 56,
                 padding: "0 1.5rem",
                 borderRadius: 18,
-                background: "rgba(255,255,255,0.05)",
+                background: "#f3761c",
                 border: "1px solid rgba(255,255,255,0.08)",
                 color: "#fff",
                 fontWeight: 600,
@@ -312,7 +315,7 @@ const PremiumCardSwapHero = () => {
                   width,
                   height,
                   overflow: "hidden",
-                  borderRadius: 36,
+                  borderRadius: 28,
                   background: "#111",
                   border: "1px solid rgba(255,255,255,0.08)",
                   boxShadow: `
@@ -324,9 +327,12 @@ const PremiumCardSwapHero = () => {
                   transformStyle: "preserve-3d",
                 }}
               >
-                <img
+                <Image
                   src={card.image}
                   alt={card.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 400px"
+                  priority={i === 0}
                   style={{
                     position: "absolute",
                     inset: 0,
@@ -334,7 +340,7 @@ const PremiumCardSwapHero = () => {
                     height: "100%",
                     objectFit: "cover",
                     transform: "scale(1.04)",
-                    filter: "brightness(.82) saturate(1.1)",
+                    filter: "brightness(1.05) saturate(1.15) contrast(1.05)",
                   }}
                 />
 
@@ -345,10 +351,10 @@ const PremiumCardSwapHero = () => {
                     background: `
                       linear-gradient(
                         to top,
-                        rgba(0,0,0,.92) 0%,
-                        rgba(0,0,0,.58) 38%,
-                        rgba(0,0,0,.12) 70%,
-                        rgba(0,0,0,.02) 100%
+                        rgba(0,0,0,.68) 0%,
+                        rgba(0,0,0,.32) 38%,
+                        rgba(0,0,0,.08) 65%,
+                        transparent 82%
                       )
                     `,
                   }}
@@ -372,37 +378,19 @@ const PremiumCardSwapHero = () => {
                 <div
                   style={{
                     position: "absolute",
-                    left: 34,
-                    right: 34,
-                    bottom: 34,
+                    left: 26,
+                    right: 26,
+                    bottom: 26,
                     zIndex: 2,
                   }}
                 >
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      padding: ".45rem .8rem",
-                      borderRadius: 999,
-                      marginBottom: "1rem",
-                      background: "rgba(255,255,255,.08)",
-                      border: "1px solid rgba(255,255,255,.12)",
-                      backdropFilter: "blur(10px)",
-                      color: "#fff",
-                      fontSize: ".90rem",
-                      fontWeight: 600,
-                      letterSpacing: ".04em",
-                    }}
-                  >
-                   
-                  </div>
-
                   <h2
                     style={{
                       color: "#fff",
-                      fontSize: "2.7rem",
-                      lineHeight: 1.02,
+                      fontSize: "2rem",
+                      lineHeight: 1.05,
                       fontWeight: 700,
-                      marginBottom: ".8rem",
+                      marginBottom: ".6rem",
                     }}
                   >
                     {card.title}
