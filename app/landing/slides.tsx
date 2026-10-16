@@ -8,8 +8,8 @@ const slides = [
   {
     id: 1,
     super: "Control",
-    title: "Gestión & Control",
-    blurb: "...",
+    title: "Rapidez",
+    blurb: "Selectia es ágil, precisa y confiable. Nuestro proceso de selección de talento está diseñado para identificar a los candidatos más calificados en el menor tiempo posible, asegurando que tu empresa pueda tomar decisiones rápidas y efectivas.",
     link: "Control Estratégico",
     color: "#34206b",
     image1: "/img/sele4.jpg",
@@ -18,8 +18,8 @@ const slides = [
   {
     id: 2,
     super: "Capacitación",
-    title: "Capacitaciones",
-    blurb: "...",
+    title: "Talento",
+    blurb: "Selectia se enfoca en el desarrollo de competencias y habilidades de los candidatos, asegurando que estén preparados para enfrentar los desafíos del entorno laboral actual. Nuestro enfoque en la capacitación garantiza que los profesionales seleccionados puedan contribuir de manera efectiva al éxito de tu empresa.",
     link: "Desarrollo de Competencias",
     color: "#19c5c1",
     image1: "/img/sele6.jpg",
@@ -28,8 +28,8 @@ const slides = [
   {
     id: 3,
     super: "Implementación",
-    title: "Implementaciones",
-    blurb: "...",
+    title: "Precisión",
+    blurb: "Selectia utiliza herramientas y metodologías avanzadas para evaluar a los candidatos de manera precisa y objetiva. Nuestro enfoque basado en datos y análisis nos permite identificar a los profesionales que mejor se ajustan a las necesidades de tu empresa, garantizando una selección de talento más efectiva.",
     link: "Transformación Operativa",
     color: "#3f88c5",
     image1: "/img/sele8.jpg",
@@ -38,8 +38,8 @@ const slides = [
   {
     id: 4,
     super: "Certificaciones",
-    title: "Certificaciones",
-    blurb: "...",
+    title: "Automatización",
+    blurb: "Selectia integra soluciones tecnológicas y procesos automatizados en la selección de talento, lo que permite optimizar el tiempo y los recursos invertidos en la búsqueda de candidatos. Nuestra plataforma facilita la gestión de candidatos y agiliza la toma de decisiones, asegurando una experiencia más eficiente para tu empresa.",
     link: "Estándares Internacionales",
     color: "#14373F",
     image1: "/img/sele10.jpg",
@@ -71,13 +71,13 @@ export default function Cinema() {
   const prevSlide = () => setActive(prev => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <section className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-[#f3e7e2] py-6 text-black md:py-8">
+    <section className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-[#f3e7e2] py-6 text-black md:py-28">
       <nav className={`mx-auto flex w-[80vw] max-w-[1200px] items-center justify-between py-4 transition-all duration-1000 md:py-6 ${loaded ? "translate-y-0 opacity-100" : "-translate-y-8 opacity-0"}`}>
-        <div className="text-xl font-black tracking-wide">Lider en Gestión Integral de Riesgos</div>
+        <div className="text-xl font-black tracking-wide">Selecciona al mejor talento en menos tiempo</div>
 
-        <ul className="hidden items-center gap-10 text-xs font-medium uppercase tracking-[0.25em] text-neutral-500 md:flex">
-          {["Gestión & Control", "Capacitación", "Implementación", "Certificaciones"].map(item => (
-            <li key={item} className=" hover:text-black">{item}</li>
+        <ul className="hidden items-center gap-10 text-lg font-bold uppercase tracking-[0.15em] text-black md:flex">
+          {["Automatización", "Precisión", "Talento", "Rapidez"].map(item => (
+            <li key={item}>{item}</li>
           ))}
         </ul>
       </nav>
@@ -94,16 +94,19 @@ export default function Cinema() {
                 className="object-contain"
               />
             </div>
-            <div className="flex h-20 w-20 items-center justify-center text-4xl font-black text-white transition-all duration-700 md:h-36 md:w-36 md:text-6xl" style={{ backgroundColor: slides[active].color }}>
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl text-4xl font-black text-white transition-all duration-700 md:h-36 md:w-36 md:text-6xl" style={{ backgroundColor: slides[active].color }}>
               0{active + 1}
             </div>
           </div>
 
           <div className="relative mt-24 md:mt-40">
-            <div className={`relative overflow-hidden flex text-center justify-center mx-auto py-6 text-white transition-all duration-1000 ${loaded ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"}`} style={{ backgroundColor: "#f3761c", transformOrigin: "top" }}>
-            
-
-              <h1 className="mt-2 flex flex-wrap py-6 text-3xl font-black leading-none md:text-3xl">
+            <div className={`relative overflow-hidden flex rounded-2xl text-center justify-center mx-auto px-3 py-6 text-white transition-all duration-1000 ${loaded ? "scale-y-100 opacity-100" : "scale-y-0 opacity-0"}`} style={{ backgroundColor: "#f3761c", transformOrigin: "top" }}>
+              <h1
+                className={`mt-2 w-full max-w-full break-words px-2 py-6 text-center font-black leading-[1.05] ${
+                  slides[active].title.length > 10
+                    ? "text-[clamp(1.8rem,3.2vw,2.5rem)]"
+                    : "text-[clamp(2rem,4vw,3.25rem)]"
+                }`}>
                 {slides[active].title.split("").map((letter, index) => (
                   <span key={`${slides[active].id}-${index}`} className="animate-letter inline-block" style={{ animationDelay: `${index * .05}s` }}>
                     {letter === " " ? "\u00A0" : letter}
@@ -159,17 +162,17 @@ export default function Cinema() {
   ))}
 </div>
 
-          <div className={`absolute right-0 bottom-0 flex h-16 w-full items-center justify-between bg-white px-4 shadow-2xl transition-all duration-1000 md:h-20 md:w-[50%] ${loaded ? "opacity-100" : "opacity-0"}`}>
-            <button onClick={prevSlide} className="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 transition hover:scale-105">
-              <ChevronLeft />
+          <div className={`absolute right-0 bottom-0 flex h-16 w-full items-center justify-between bg-transparent px-4 transition-all duration-1000 md:h-20 md:w-[50%] ${loaded ? "opacity-100" : "opacity-0"}`}>
+            <button onClick={prevSlide} aria-label="Anterior" className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f3761c] text-white transition hover:scale-105 hover:bg-[#d9650f]">
+              <ChevronLeft className="text-white" />
             </button>
 
-            <div className="text-sm font-semibold tracking-[0.3em] text-neutral-500">
-              <span className="text-black">0{active+1}</span> / 04
+            <div className="rounded-2xl bg-[#f3761c] px-5 py-2.5 text-sm font-semibold tracking-[0.3em] text-white">
+              <span className="text-white">0{active+1}</span> <span className="text-white/70">/ 04</span>
             </div>
 
-            <button onClick={nextSlide} className="flex h-12 w-12 items-center justify-center rounded-full border border-neutral-200 transition hover:scale-105">
-              <ChevronRight />
+            <button onClick={nextSlide} aria-label="Siguiente" className="flex h-12 w-12 items-center justify-center rounded-full bg-[#f3761c] text-white transition hover:scale-105 hover:bg-[#d9650f]">
+              <ChevronRight className="text-white" />
             </button>
           </div>
         </div>

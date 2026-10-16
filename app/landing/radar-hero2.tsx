@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Radar as RadarIcon } from "lucide-react";
 import { Renderer, Program, Mesh, Triangle } from "ogl";
 
@@ -240,7 +240,7 @@ void main() {
   uColor * (ringGlow + spokeGlow + sweepBeam) * fade * uBrightness;
 
 vec3 pointColor =
- vec3(0.45, 0.3, 1.0) * points * 0.8;
+ vec3(0.953, 0.463, 0.110) * points * 0.8;
 
 vec3 col =
   radarCol
@@ -263,25 +263,49 @@ function Radar({
   sweepSpeed = 1.2,
   sweepWidth = 8,
   sweepLobes = 1,
-  color = "#38BDF8",
-  backgroundColor = "#020617",
+  color = "#f3761c",
+  backgroundColor = "#000000",
   falloff = 3,
   brightness = 0.9,
   enableMouseInteraction = true,
   mouseInfluence = 0.22,
 }: RadarProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const visibleRef = useRef(true);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visibleRef.current = entry.isIntersecting;
+      },
+      { rootMargin: "200px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
     const container = containerRef.current;
 
-    const renderer = new Renderer({
-      alpha: true,
-      premultipliedAlpha: false,
-      dpr: Math.min(window.devicePixelRatio, 2),
-    });
+    // Sin WebGL disponible: fallback a gradiente CSS en vez de romper la página.
+    let renderer: Renderer;
+    try {
+      renderer = new Renderer({
+        alpha: true,
+        premultipliedAlpha: false,
+        dpr: Math.min(window.devicePixelRatio, 2),
+        powerPreference: "low-power",
+      });
+      if (!renderer.gl) throw new Error("no-gl");
+    } catch {
+      setFailed(true);
+      return;
+    }
 
     const gl = renderer.gl;
 
@@ -411,6 +435,9 @@ function Radar({
     function update(time: number) {
       animationFrameId = requestAnimationFrame(update);
 
+      // Pausa GPU fuera de vista.
+      if (!visibleRef.current) return;
+
       program.uniforms.uTime.value = time * 0.001;
 
       currentMouse[0] += 0.05 * (targetMouse[0] - currentMouse[0]);
@@ -428,8 +455,16 @@ function Radar({
 
     animationFrameId = requestAnimationFrame(update);
 
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+      cancelAnimationFrame(animationFrameId);
+    };
+    gl.canvas.addEventListener("webglcontextlost", handleContextLost);
+
     return () => {
       cancelAnimationFrame(animationFrameId);
+
+      gl.canvas.removeEventListener("webglcontextlost", handleContextLost);
 
       window.removeEventListener("resize", resize);
 
@@ -465,7 +500,14 @@ function Radar({
     <div
       ref={containerRef}
       className="absolute inset-0 h-full w-full scale-[1.15] translate-x-[18%]"
-    />
+    >
+      {failed && (
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(243,118,28,0.25),transparent_70%)]"
+        />
+      )}
+    </div>
   );
 }
 
@@ -475,39 +517,37 @@ function Radar({
 
 export default function RadarHero2() {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#020617] text-white">
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
       {/* Background */}
       <Radar />
 
       {/* Ambient glow */}
-      <div className="pointer-events-none absolute right-[-10%] top-1/2 h-[700px] w-[700px] -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[160px]" />
+      <div className="pointer-events-none absolute right-[-10%] top-1/2 h-[700px] w-[700px] -translate-y-1/2 rounded-full bg-[#f3761c]/10 blur-[160px]" />
 
       {/* Content */}
       <div className="relative z-20 flex min-h-screen items-center px-6 py-20">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between">
           <div className="max-w-3xl">
             {/* Badge */}
-            <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-cyan-400/20 bg-cyan-500/10 px-5 py-2 backdrop-blur-2xl">
-              <RadarIcon className="h-4 w-4 text-cyan-300" />
+            <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-[#f3761c]/30 bg-[#f3761c]/10 px-5 py-2 backdrop-blur-2xl">
+              <RadarIcon className="h-4 w-4 text-[#f6a05c]" />
 
-              <span className="text-sm font-medium text-cyan-100">
-                Advanced Tracking Interface
+              <span className="text-lg font-medium text-orange-100">
+                Los mejores candidatos
               </span>
             </div>
 
             {/* Title */}
             <h1 className="text-5xl font-black leading-[0.88] tracking-[-0.06em] md:text-7xl">
-              Electric
-              <span className="mt-2 block bg-gradient-to-r from-cyan-300 via-sky-200 to-blue-500 bg-clip-text text-transparent">
-                Radar System
+              Confía en el
+              <span className="mt-2 block bg-gradient-to-r from-[#f3761c] via-[#f6b26b] to-amber-300 bg-clip-text text-transparent">
+                Análisis de Selectia
               </span>
             </h1>
 
             {/* Description */}
-            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-cyan-100/70 md:text-xl">
-              Futuristic radar shader with cinematic scanning effects, ultra
-              smooth electric glow and immersive real-time cursor interaction
-              powered by WebGL.
+            <p className="mt-8 max-w-md text-lg leading-relaxed text-orange-100/70 md:text-xl">
+              Selecciona al mejor talento dentro de tu base de datos para cubrir los puestos, los que tengan más afinidad a tus requerimientos pasarán a la siguiente fase.
             </p>
           </div>
         </div>

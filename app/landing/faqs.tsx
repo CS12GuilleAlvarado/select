@@ -9,38 +9,40 @@ import {
   Building2,
   Award,
   HelpCircle,
+  ArrowRight,
 } from "lucide-react";
+import BubbleFillButton from "./bubblefill";
 
 const faqs = [
   {
     icon: ShieldCheck,
-    question: "¿Qué es una auditoría SSMA y por qué es importante?",
+    question: "¿Es seguro utilizar Selectia para gestionar los procesos de selección de mi empresa?",
     answer:
-      "Una auditoría SSMA permite identificar brechas, riesgos y oportunidades de mejora en Seguridad, Salud Ocupacional, Medio Ambiente y Responsabilidad Social. Es el punto de partida para construir una cultura preventiva sólida y sostenible.",
+      "La seguridad y la confidencialidad de la información son aspectos fundamentales en cualquier proceso de selección, especialmente cuando se gestionan currículums, datos de contacto, experiencia laboral y otra información personal de los candidatos. Selectia está concebida para centralizar la gestión de los perfiles profesionales en un entorno de trabajo organizado, reduciendo la dispersión de documentos y facilitando un manejo más controlado de la información.",
   },
   {
     icon: Building2,
-    question: "¿Trabajan únicamente con empresas mineras?",
+    question: "¿Qué beneficios obtiene mi empresa al implementar Selectia?",
     answer:
-      "No. Nuestra metodología es aplicable a minería, energía, construcción, industria, manufactura, transporte y cualquier organización que busque fortalecer sus estándares de gestión y cumplimiento.",
+      "Selectia permite organizar la información de los candidatos y analizarla en función de los requisitos definidos para cada puesto. De esta manera, los reclutadores pueden identificar con mayor facilidad los perfiles que merecen una evaluación prioritaria, visualizar la información relevante de cada postulación y dedicar más tiempo a las actividades que requieren criterio humano, como las entrevistas, la validación de competencias y la evaluación cultural.",
   },
   {
     icon: FileSearch,
-    question: "¿Cómo determinan el nivel de madurez SSMA?",
+    question: "¿Cómo determina Selectia si un candidato cumple con los requisitos del puesto?",
     answer:
-      "Utilizamos una metodología basada en indicadores, observaciones de campo, entrevistas, documentación y benchmarking internacional para ubicar a la organización dentro de una escala de madurez claramente definida.",
+      "El proceso comienza con la definición de los criterios del puesto, que pueden incluir formación académica, experiencia laboral, conocimientos técnicos, competencias, certificaciones y otros requisitos relevantes. A partir de esta información, la plataforma puede ayudar a organizar y analizar los currículums recibidos, identificando evidencias de correspondencia entre la experiencia declarada por cada candidato y los criterios establecidos.",
   },
   {
     icon: Award,
-    question: "¿Qué beneficios obtiene la organización?",
+    question: "¿Qué valor diferencial aporta Selectia frente a otras soluciones de reclutamiento?",
     answer:
-      "Mayor cumplimiento normativo, reducción de incidentes, fortalecimiento de la cultura preventiva, mejor desempeño operacional y una hoja de ruta clara hacia estándares de clase mundial.",
+      "En un mercado donde las empresas necesitan contratar con agilidad sin renunciar a la calidad, esta combinación resulta especialmente relevante. La ventaja competitiva no consiste simplemente en procesar más currículums, sino en ayudar a identificar mejor qué perfiles conviene evaluar y por qué. Selectia busca aportar una selección más ágil, organizada y fundamentada, conectando la eficiencia tecnológica con la experiencia humana para mejorar la calidad de las decisiones de contratación.",
   },
   {
     icon: HelpCircle,
-    question: "¿La implementación puede realizarse por etapas?",
+    question: "¿Por qué debería implementar Selectia en los procesos de selección de mi empresa?",
     answer:
-      "Sí. Diseñamos planes flexibles que pueden ejecutarse de manera integral o progresiva según las necesidades, recursos y objetivos estratégicos de cada organización.",
+      "La adopción de una herramienta de este tipo debe acompañarse de una definición clara de los criterios de selección, capacitación del equipo y seguimiento de indicadores como el tiempo de revisión, la duración de las vacantes, la conversión de postulantes a entrevistas y la calidad de las contrataciones. Medir estos resultados permitirá determinar el impacto real de Selectia en la operación de cada organización.",
   },
 ];
 
@@ -58,18 +60,22 @@ function FAQItem({
   return (
     <motion.div
       layout
-      className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl"
+      className={`overflow-hidden rounded-2xl border backdrop-blur-xl transition-shadow duration-300 ${
+        isOpen
+          ? "border-[#f3761c]/40 bg-white/[0.05] shadow-[0_0_35px_rgba(243,118,28,0.20)]"
+          : "border-white/10 bg-white/[0.03] hover:border-[#f3761c]/30 hover:shadow-[0_0_35px_rgba(243,118,28,0.15)]"
+      }`}
     >
       <button
         onClick={onClick}
         className="group flex w-full items-center justify-between p-6 text-left"
       >
         <div className="flex items-center gap-4">
-          <div className="rounded-xl bg-cyan-500/10 p-3">
-            <Icon className="h-6 w-6 text-cyan-300" />
+          <div className="rounded-xl bg-[#f3761c]/15 p-3 shadow-[0_0_20px_rgba(243,118,28,0.25)]">
+            <Icon className="h-6 w-6 text-orange-300" />
           </div>
 
-          <h3 className="text-lg font-semibold text-white transition-colors group-hover:text-cyan-300">
+          <h3 className="text-lg font-semibold text-white transition-colors group-hover:text-orange-200">
             {faq.question}
           </h3>
         </div>
@@ -82,7 +88,7 @@ function FAQItem({
             duration: 0.25,
           }}
         >
-          <ChevronDown className="h-5 w-5 text-cyan-300" />
+          <ChevronDown className="h-5 w-5 text-[#f3761c]" />
         </motion.div>
       </button>
 
@@ -98,7 +104,7 @@ function FAQItem({
         className="overflow-hidden"
       >
         <div className="border-t border-white/10 px-6 py-5">
-          <p className="leading-relaxed text-slate-400">
+          <p className="leading-relaxed text-white/60">
             {faq.answer}
           </p>
         </div>
@@ -111,11 +117,8 @@ export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="relative overflow-hidden bg-slate-950 py-28">
-      {/* Glow Effects */}
-      <div className="absolute left-0 top-0 h-[500px] w-[500px] rounded-full bg-cyan-500/10 blur-[180px]" />
-
-      <div className="absolute right-0 bottom-0 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[180px]" />
+    <section className="relative overflow-hidden bg-[#14373F] py-28">
+    
 
       <div className="relative mx-auto max-w-6xl px-6">
         {/* Header */}
@@ -132,18 +135,15 @@ export default function FAQSection() {
           transition={{ duration: 0.8 }}
           className="mb-20 text-center"
         >
-          <span className="mb-5 inline-flex rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-2 text-sm font-medium tracking-wide text-cyan-300">
-            Preguntas Frecuentes
-          </span>
 
-          <h2 className="mb-6 text-5xl font-bold text-white">
+          <h2 className="mb-6 mt-20 text-6xl font-bold text-white">
             Resolvemos sus
-            <span className="block bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+            <span className="block bg-gradient-to-r from-[#f3761c] to-amber-300 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(243,118,28,0.35)]">
               principales consultas
             </span>
           </h2>
 
-          <p className="mx-auto max-w-3xl text-lg leading-relaxed text-slate-400">
+          <p className="mx-auto max-w-4xl text-lg leading-relaxed text-white/60">
             Conozca cómo nuestras metodologías, auditorías y programas
             de implementación ayudan a las organizaciones a fortalecer
             su desempeño en Seguridad, Salud Ocupacional, Medio Ambiente
@@ -182,20 +182,25 @@ export default function FAQSection() {
           }}
           className="mt-20"
         >
-          <div className="rounded-3xl border border-cyan-500/20 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 p-10 text-center backdrop-blur-xl">
+          <div className="rounded-3xl border border-[#f3761c]/30 bg-gradient-to-r from-[#f3761c]/15 to-amber-400/10 p-10 text-center shadow-[0_0_60px_rgba(243,118,28,0.15)] backdrop-blur-xl">
             <h3 className="mb-4 text-3xl font-bold text-white">
               ¿Necesita una evaluación personalizada?
             </h3>
 
-            <p className="mx-auto mb-8 max-w-2xl text-slate-400">
+            <p className="mx-auto mb-8 max-w-2xl text-white/60">
               Nuestro equipo puede analizar la situación actual de su
               organización y diseñar una hoja de ruta hacia estándares
               de desempeño de clase mundial.
             </p>
 
-            <button className="rounded-xl bg-cyan-500 px-8 py-4 font-semibold text-white transition-all duration-300 hover:bg-cyan-400 hover:shadow-[0_0_40px_rgba(34,211,238,0.4)]">
-              Solicitar Diagnóstico
-            </button>
+            <BubbleFillButton
+              text="Solicitar Diagnóstico"
+              icon={<ArrowRight size={18} />}
+              borderColor="#f3761c"
+              fillColor="#f3761c"
+              textColor="#ffffff"
+              className="px-8 py-4 shadow-[0_0_40px_rgba(243,118,28,0.35)] hover:shadow-[0_0_40px_rgba(243,118,28,0.55)]"
+            />
           </div>
         </motion.div>
       </div>

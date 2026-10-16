@@ -18,18 +18,18 @@ const PremiumCardSwapHero = () => {
     () => [
       {
         image: sele1Img,
-        title: "Hablidades técnicas",
-        subtitle: "Impacto Digital Estratégico",
+        title: "Sube tus CV´s",
+        subtitle: "Paso 1",
       },
       {
         image: sele2Img,
-       title: "Afinidad de experiencia",
-       subtitle: "Impacto Digital Estratégico",
+       title: "La IA puntúa cada uno",
+       subtitle: "Paso 2",
       },
       {
         image: sele3Img,
-        title: "Habilidades blandas",
-         subtitle: "Impacto Digital Estratégico",
+        title: "Revisa y preselecciona",
+         subtitle: "Paso 3",
       },
     ],
     []
@@ -223,9 +223,9 @@ const PremiumCardSwapHero = () => {
           <h1
             style={{
               color: "#fff",
-              fontSize: "clamp(2rem,4vw,7rem)",
-              lineHeight: 1.02,
-              fontWeight: 800,
+              fontSize: "clamp(3rem,4vw,7rem)",
+              lineHeight: 1.00,
+              fontWeight: 900,
               marginBottom: "1.5rem",
             }}
           >
@@ -238,8 +238,8 @@ const PremiumCardSwapHero = () => {
           <p
             style={{
               color: "rgba(255,255,255,0.68)",
-              fontSize: "1.4rem",
-              lineHeight: 1.8,
+              fontSize: "1.7rem",
+              lineHeight: 1.4,
               maxWidth: 520,
               marginBottom: "2.5rem",
             }}
@@ -384,27 +384,26 @@ const PremiumCardSwapHero = () => {
                     zIndex: 2,
                   }}
                 >
-                  <h2
-                    style={{
-                      color: "#fff",
-                      fontSize: "2rem",
-                      lineHeight: 1.05,
-                      fontWeight: 700,
-                      marginBottom: ".6rem",
-                    }}
-                  >
-                    {card.title}
-                  </h2>
-
                   <p
                     style={{
                       color: "rgba(255,255,255,.72)",
-                      fontSize: "1rem",
+                      fontSize: "1.2rem",
                       lineHeight: 1.7,
                     }}
                   >
                     {card.subtitle}
                   </p>
+                    <h2
+                      style={{
+                        color: "#fff",
+                        fontSize: "2.0rem",
+                        lineHeight: 1.05,
+                        fontWeight: 700,
+                        marginBottom: ".6rem",
+                      }}
+                    >
+                      {card.title}
+                    </h2>
                 </div>
                 <div
                   style={{

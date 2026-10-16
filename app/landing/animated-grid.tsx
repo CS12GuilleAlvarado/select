@@ -2,6 +2,14 @@
 
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
+import { LazyMount } from "./visibility";
+import { BorderGlowCard } from "./border-glow";
+
+const RANKING = [
+  { name: "Mariana G. — Backend Sr", pct: 94 },
+  { name: "Diego R. — Data Analyst", pct: 89 },
+  { name: "Lucía F. — QA Engineer", pct: 86 },
+];
 
 interface AnimatedGridBackgroundProps {
   className?: string;
@@ -11,6 +19,21 @@ const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
   className = "",
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const visibleRef = useRef(true);
+
+  // Pausa el loop pesado cuando el canvas está fuera de vista.
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visibleRef.current = entry.isIntersecting;
+      },
+      { rootMargin: "200px 0px" },
+    );
+    io.observe(canvas);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -50,6 +73,12 @@ const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
     window.addEventListener("resize", resizeCanvas);
 
     const draw = () => {
+      // Fuera de vista: no dibujar, solo mantener el RAF barato.
+      if (!visibleRef.current) {
+        animationFrameId = requestAnimationFrame(draw);
+        return;
+      }
+
       const width = canvas.offsetWidth;
       const height = canvas.offsetHeight;
 
@@ -136,21 +165,21 @@ const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
 
             glowGradient.addColorStop(
               0,
-              `rgba(59,130,246,${
-                0.55 * next
+              `rgba(246,155,94,${
+                0.45 * next
               })`
             );
 
             glowGradient.addColorStop(
               0.4,
-              `rgba(59,130,246,${
-                0.18 * next
+              `rgba(246,155,94,${
+                0.15 * next
               })`
             );
 
             glowGradient.addColorStop(
               1,
-              "rgba(59,130,246,0)"
+              "rgba(246,155,94,0)"
             );
 
             ctx.fillStyle =
@@ -169,19 +198,19 @@ const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
             ctx.fill();
 
             ctx.shadowColor = `rgba(
-              59,
-              130,
               246,
+              155,
+              94,
               ${next}
             )`;
 
             ctx.shadowBlur = 40;
 
             ctx.fillStyle = `rgba(
-              37,
-              99,
-              235,
-              ${0.28 * next}
+              234,
+              139,
+              62,
+              ${0.25 * next}
             )`;
 
             ctx.fillRect(
@@ -192,10 +221,10 @@ const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
             );
 
             ctx.fillStyle = `rgba(
-              147,
-              197,
-              253,
-              ${0.22 * next}
+              251,
+              194,
+              140,
+              ${0.20 * next}
             )`;
 
             ctx.fillRect(
@@ -206,9 +235,9 @@ const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
             );
 
             ctx.strokeStyle = `rgba(
-              96,
-              165,
-              250,
+              246,
+              155,
+              94,
               ${next}
             )`;
 
@@ -243,7 +272,7 @@ const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
 
       gradient.addColorStop(
         1,
-        "rgba(0,0,0,0.82)"
+        "rgba(8,26,30,0.85)"
       );
 
       ctx.fillStyle = gradient;
@@ -307,62 +336,130 @@ const AnimatedGridBackground: React.FC<AnimatedGridBackgroundProps> = ({
   }, []);
 
   return (
-    <section className="relative isolate h-screen overflow-hidden bg-[#050816]">
-
+    <section className="relative isolate min-h-screen overflow-hidden bg-[#14373F]">
       <canvas
         ref={canvasRef}
         className="absolute inset-0 h-full w-full pointer-events-none"
       />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#14373F]/40 via-transparent to-[#0a1e23]/70" />
+      <div className="relative z-20 mx-auto flex w-full max-w-6xl flex-col justify-center gap-12 px-6 py-24 lg:py-28">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(246,155,94,0.10),transparent_60%)] blur-3xl" />
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
+        <div className="grid w-full items-center gap-10 lg:grid-cols-2 lg:gap-14">
+          {/* Izquierda: título, descripción y captura de email */}
+          <div className="w-full text-center lg:text-left">
+            <h2 className="text-4xl font-black leading-[1.05] text-white md:text-5xl">
+              Filtra cada CV en{" "}
+              <span className="bg-gradient-to-r from-[#f3761c] to-amber-300 bg-clip-text text-transparent">
+                segundos
+              </span>
+              , no en semanas
+            </h2>
 
-      <div className="relative z-20 flex h-full flex-col items-center justify-center px-6 text-center">
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/70 lg:mx-0">
+              Selectia lee, puntúa y clasifica a los candidatos según tu
+              vacante, con un desglose transparente detrás de cada decisión.
+            </p>
 
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08),transparent_60%)] blur-3xl" />
-
-        <Image
-          src="/img/logolarge2.png"
-          alt="Logo"
-          width={1020}
-          height={120}
-          className="mb-6 pointer-events-none"
-        />
-
-     
-
-        <div className="mt-6 flex flex-wrap gap-10">
-            {/* BUTTON 1 */}
-            <button
-              className="group relative ml-6 md:ml-0 cursor-pointer transition duration-300 hover:scale-105 overflow-hidden px-8 py-6 text-sm font-semibold uppercase tracking-[0.2em] text-black"
-              style={{
-                clipPath: "polygon(12px 0%,100% 0%,100% calc(100% - 12px),calc(100% - 12px) 100%,0% 100%,0% 12px)",
-              }}>
-              <div className="absolute inset-0 bg-gradient-to-r from-sky-500 to-gray-200" />
-
-              <div className="absolute inset-0 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-400 bg-sky-600" />
-
-              <span className="relative z-10">Nuestros servicios</span>
-            </button>
-
-            {/* BUTTON 2 */}
-            <button
-              className="group relative ml-8 md:ml-0 overflow-hidden cursor-pointer transition duration-300 hover:scale-105 border border-white/10 bg-blue-600 px-8 py-6 text-sm font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-xl hover:border-sky-300/40"
-              style={{
-                clipPath: "polygon(16px 0%,100% 0%,100% calc(100% - 16px),calc(100% - 16px) 100%,0% 100%,0% 16px)",
-              }}>
-              {/* BORDER GLOW */}
-              <div className="absolute inset-0 rounded-none opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-              </div>
-
-              {/* BOTTOM GLOW */}
-              <div className="absolute bottom-[-30px] left-1/2 h-16 w-3/4 -translate-x-1/2 rounded-full blur-2xl transition-all duration-500" />
-
-              <span className="relative z-10">Reserva una cita</span>
-            </button>
+            <form
+              className="mx-auto mt-8 flex w-full max-w-xs flex-col gap-3 lg:mx-0"
+              onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="email"
+                required
+                placeholder="aquicolocaelnombredetu@empresa.com"
+                aria-label="Correo para una demo"
+                className="h-14 w-full placeholder:text-center rounded-full border-2 border-[#f3761c] bg-white/10 px-6 text-white shadow-[0_0_25px_rgba(243,118,28,0.35)] backdrop-blur-md transition-shadow placeholder:text-white/40 focus:shadow-[0_0_40px_rgba(243,118,28,0.55)] focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="h-14 w-full rounded-full bg-[#f3761c] px-8 font-semibold text-white shadow-[0_0_30px_rgba(243,118,28,0.45)] transition-all hover:bg-[#d9650f] hover:shadow-[0_0_45px_rgba(243,118,28,0.6)]">
+                Únete para una demo
+              </button>
+            </form>
           </div>
 
-      </div>
+          {/* Derecha: tarjeta interactiva */}
+          <div className="flex w-full py-14 justify-center lg:justify-end">
+            <LazyMount minHeight={400}>
+              <BorderGlowCard colors={["#f3761c", "#fbbf24", "#ef8a3c"]} width="100%">
+                <div
+                  style={{
+                    display: "inline-flex",
+                    padding: "0.4rem 0.8rem",
+                    marginTop: "1.2rem",
+                    borderRadius: "999px",
+                    background: "rgba(243,118,28,0.12)",
+                    border: "1px solid rgba(243,118,28,0.35)",
+                    marginBottom: "2.8rem",
+                    fontSize: "0.8rem",
+                    color: "#fdba74",
+                  }}>
+                  Ranking IA · Demo
+                </div>
 
+                <h3
+                  style={{
+                    fontSize: "1.6rem",
+                    fontWeight: 800,
+                    marginBottom: "1.25rem",
+                    lineHeight: 1.15,
+                  }}>
+                  Top candidatos para tu vacante
+                </h3>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                  {RANKING.map((row) => (
+                    <div key={row.name}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          fontSize: "0.9rem",
+                          marginBottom: "0.4rem",
+                        }}>
+                        <span style={{ opacity: 0.85 }}>{row.name}</span>
+                        <span style={{ color: "#fdba74", fontWeight: 700 }}>{row.pct}%</span>
+                      </div>
+                      <div
+                        style={{
+                          height: "8px",
+                          borderRadius: "999px",
+                          background: "rgba(255,255,255,0.10)",
+                          overflow: "hidden",
+                        }}>
+                        <div
+                          style={{
+                            height: "100%",
+                            width: `${row.pct}%`,
+                            borderRadius: "999px",
+                            background: "linear-gradient(90deg,#f3761c,#fbbf24)",
+                            boxShadow: "0 0 12px rgba(243,118,28,0.7)",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </BorderGlowCard>
+            </LazyMount>
+          </div>
+        </div>
+
+        {/* Debajo: imagen grande */}
+        <div className="w-full">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 shadow-[0_0_80px_rgba(243,118,28,0.30)]">
+            <Image
+              src="/img/hero/panel.png"
+              alt="Panel de Selectia"
+              width={1600}
+              height={900}
+              className="h-auto w-full object-cover"
+              priority
+            />
+          </div>
+        </div>
+      </div>
     </section>
   );
 };

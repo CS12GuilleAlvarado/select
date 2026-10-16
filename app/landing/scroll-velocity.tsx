@@ -96,8 +96,8 @@ export default function ScrollVelocity({ texts, velocity = 100, className = "", 
       <div
         className={`relative overflow-hidden ${parallaxClassName}`}
         style={{
-          maskImage: "linear-gradient(to right,transparent,white 10%,white 90%,transparent)",
-          WebkitMaskImage: "linear-gradient(to right,transparent,white 10%,white 90%,transparent)",
+          maskImage: "linear-gradient(to right,transparent,white 20%,white 80%,transparent)",
+          WebkitMaskImage: "linear-gradient(to right,transparent,white 20%,white 80%,transparent)",
           ...parallaxStyle,
         }}>
         <motion.div

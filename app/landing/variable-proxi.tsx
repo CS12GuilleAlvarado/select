@@ -13,6 +13,7 @@ interface VariableProximityTextProps extends HTMLAttributes<HTMLSpanElement> {
 
 export default function VariableProximityText({ text, radius = 180, falloff = "gaussian", fromFontVariationSettings = "'wght' 400,'opsz' 14", toFontVariationSettings = "'wght' 1000,'opsz' 40", className = "", style, ...props }: VariableProximityTextProps) {
   const containerRef = useRef<HTMLSpanElement>(null);
+  const visibleRef = useRef(true);
   const letterRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const positionsRef = useRef<{ x: number; y: number }[]>([]);
   const mouseRef = useRef({ x: -9999, y: -9999 });
@@ -123,6 +124,12 @@ export default function VariableProximityText({ text, radius = 180, falloff = "g
     };
 
     const animate = () => {
+      // Fuera de vista: no tocar el DOM, solo mantener el loop barato.
+      if (!visibleRef.current) {
+        rafRef.current = requestAnimationFrame(animate);
+        return;
+      }
+
       const mouse = mouseRef.current;
 
       letterRefs.current.forEach((letter, index) => {
@@ -158,10 +165,23 @@ export default function VariableProximityText({ text, radius = 180, falloff = "g
 
     rafRef.current = requestAnimationFrame(animate);
 
+    const el = containerRef.current;
+    let io: IntersectionObserver | null = null;
+    if (el && typeof IntersectionObserver !== "undefined") {
+      io = new IntersectionObserver(
+        ([entry]) => {
+          visibleRef.current = entry.isIntersecting;
+        },
+        { rootMargin: "200px 0px" },
+      );
+      io.observe(el);
+    }
+
     return () => {
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
+      io?.disconnect();
     };
   }, [radius, falloff, parsedSettings, fromFontVariationSettings]);
 

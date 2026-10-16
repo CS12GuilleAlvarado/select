@@ -130,13 +130,35 @@
     overscroll-behavior-x: none;
     overscroll-behavior-y: none;
   }
- html {
+  html {
     @apply font-sans antialiased;
-     margin: 0;
+    margin: 0;
     padding: 0;
     height: 100%;
     overscroll-behavior: none;
     overscroll-behavior-x: none;
     overscroll-behavior-y: none;
+    scroll-behavior: smooth;
+
   }
+}
+
+/* Oculta la barra de scroll interna de drei ScrollControls (fluid-glass)
+   sin romper el scroll por rueda: el contenedor sigue con overflow auto. */
+.fluid-glass-no-bar * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.fluid-glass-no-bar *::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Oculta la barra de scroll nativa de la página (el scroll sigue funcionando). */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }

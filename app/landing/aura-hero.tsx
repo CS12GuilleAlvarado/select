@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronRight } from "lucide-react";
 import { Renderer, Program, Mesh, Triangle } from "ogl";
 
 interface SoftAuroraProps {
@@ -233,8 +233,8 @@ function SoftAurora({
   speed = 0.55,
   scale = 1.1,
   brightness = 1.2,
-  color1 = "#4F46E5",
-  color2 = "#7C3AED",
+  color1 = "#f3761c",
+  color2 = "#14373F",
   noiseFrequency = 2,
   noiseAmplitude = 1,
   bandHeight = 0.55,
@@ -246,17 +246,42 @@ function SoftAurora({
   mouseInfluence = 0.45,
 }: SoftAuroraProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const visibleRef = useRef(true);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visibleRef.current = entry.isIntersecting;
+      },
+      { rootMargin: "200px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
     const container = containerRef.current;
 
-    const renderer = new Renderer({
-      alpha: true,
-      premultipliedAlpha: false,
-      dpr: Math.min(window.devicePixelRatio, 2),
-    });
+    // Sin WebGL disponible (límite de contextos del navegador/GPU):
+    // fallback a gradiente CSS en vez de romper la página.
+    let renderer: Renderer;
+    try {
+      renderer = new Renderer({
+        alpha: true,
+        premultipliedAlpha: false,
+        dpr: Math.min(window.devicePixelRatio, 2),
+        powerPreference: "low-power",
+      });
+      if (!renderer.gl) throw new Error("no-gl");
+    } catch {
+      setFailed(true);
+      return;
+    }
 
     const gl = renderer.gl;
 
@@ -350,6 +375,9 @@ function SoftAurora({
     function update(time: number) {
       animationFrameId = requestAnimationFrame(update);
 
+      // Pausa GPU fuera de vista.
+      if (!visibleRef.current) return;
+
       program.uniforms.uTime.value = time * 0.001;
 
       currentMouse[0] += (targetMouse[0] - currentMouse[0]) * 0.05;
@@ -363,8 +391,17 @@ function SoftAurora({
 
     animationFrameId = requestAnimationFrame(update);
 
+    // Si el contexto se pierde en caliente, detén el loop sin errores.
+    const handleContextLost = (e: Event) => {
+      e.preventDefault();
+      cancelAnimationFrame(animationFrameId);
+    };
+    gl.canvas.addEventListener("webglcontextlost", handleContextLost);
+
     return () => {
       cancelAnimationFrame(animationFrameId);
+
+      gl.canvas.removeEventListener("webglcontextlost", handleContextLost);
 
       window.removeEventListener("resize", resize);
 
@@ -399,55 +436,68 @@ function SoftAurora({
     <div
       ref={containerRef}
       className="absolute inset-0 z-0 h-full w-full pointer-events-auto"
-    />
+    >
+      {failed && (
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_40%,rgba(243,118,28,0.32),transparent_70%),radial-gradient(ellipse_50%_40%_at_70%_60%,rgba(20,55,63,0.9),transparent_70%)]"
+        />
+      )}
+    </div>
   );
 }
 
 export default function AuroraHero() {
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[#050816] text-white">
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
       {/* BACKGROUND */}
 
       <SoftAurora />
 
+      {/* Velo verde faqs para completar el trío naranja / violeta / verde */}
+      <div className="pointer-events-none absolute -left-[10%] bottom-[-10%] z-0 h-[500px] w-[500px] rounded-full bg-[#14373F]/60 blur-[160px]" />
+
       {/* CONTENT */}
 
-      <div className="max-w-3xl pt-60 px-6 md:ml-20">
-        <div className="mb-20 inline-flex items-center gap-3 absolute rounded-full border border-indigo-400/20 bg-indigo-500/10 px-5 py-2 backdrop-blur-2xl">
-          <Sparkles className="h-4 w-4 text-indigo-300" />
-
-          <span className="text-sm font-medium text-indigo-100">
-            Interactive Aurora Experience
-          </span>
-        </div>
-        <div className="absolute top-80 left-20">
+      <div className="relative z-10 max-w-3xl px-6 pt-60 md:ml-20">
+     
+        <div className="absolute top-40 left-20">
           <h1 className="text-5xl font-black leading-[0.9] tracking-[-0.05em] md:text-7xl">
-            Dynamic
-            <span className="mt-2 block bg-gradient-to-r from-indigo-300 via-violet-200 to-indigo-500 bg-clip-text text-transparent">
-              Cursor Motion
+            Selectia
+            <span className="mt-2 block bg-gradient-to-r from-[#f3761c] via-[#f6a05c] to-[#6ee7b7] bg-clip-text text-transparent">
+              es Antiestrés
             </span>
           </h1>
-          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-indigo-100/75 md:text-xl">
-            Move your cursor vertically and watch the aurora react naturally in
-            real time with cinematic smoothness and futuristic motion shaders.
+          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-white/70 md:text-xl">
+            Los procesos de selección no deberían ser un dolor de cabeza, ni pérdida de tiempo.
+            Analiza a los caandidatos y vacantes de manera automática, y encuentra a los mejores talentos para tu empresa.
           </p>
         </div>
 
-        <div className="mt-90 flex flex-col gap-5 sm:flex-row">
-          <button className="group relative overflow-hidden rounded-[2rem] border border-indigo-300/20 bg-gradient-to-br from-indigo-500 to-violet-600 px-8 py-5 font-semibold text-white shadow-[0_0_80px_rgba(99,102,241,0.55)] transition-all duration-500 hover:scale-[1.03]">
-            <span className="absolute inset-0 bg-white/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-            <span className="relative z-10 flex items-center gap-3">
-              Launch Experience
-              <ArrowRight className="h-5 w-5 transition-transform duration-500 group-hover:translate-x-1" />
-            </span>
-          </button>
-
-          <button className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 px-8 py-5 backdrop-blur-2xl transition-all duration-500 hover:border-indigo-400/50 hover:bg-indigo-500/10 hover:shadow-[0_0_50px_rgba(99,102,241,0.25)]">
-            <span className="absolute inset-[1px] rounded-[1.9rem] border border-white/5" />
-
-            <span className="relative z-10 text-white">Explore Technology</span>
-          </button>
+        <div className="mt-60 flex flex-col items-center gap-20 sm:flex-row">
+      <div className="my-10 flex justify-center">
+        <div className="relative flex items-center justify-center">
+          <>
+            <div className="absolute inset-0 scale-150 animate-ping rounded-full bg-[#f3761c]/40" />
+            <div className="absolute inset-0 scale-125 animate-ping rounded-full bg-[#f6b26b]/30 [animation-delay:0.5s]" />
+          </>
+          <div className="relative flex size-12 items-center justify-center rounded-full border border-[#f3761c]/40 bg-gradient-to-br from-[#f3761c] to-[#d9650f] text-white shadow-[0_0_30px_rgba(243,118,28,0.45)] transition-transform hover:scale-110">
+            <ChevronRight className="h-5 w-5" />
+          </div>
+        </div>
+      </div>
+         
+  <button className="group h-fit cursor-pointer self-center bg-gradient-to-b from-[#f3761c] to-[#d9650f] shadow-[0px_4px_32px_0_rgba(243,118,28,.50)] px-10 py-3 rounded-xl border-[1px] border-[#f3761c]/50 text-white text-2xl font-medium">
+        <div className="grid overflow-hidden text-center">
+          <p className="col-start-1 row-start-1 whitespace-nowrap transition-transform duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:-translate-y-full">
+            Selectia es
+          </p>
+          <p className="col-start-1 row-start-1 whitespace-nowrap transition-transform duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)] translate-y-full group-hover:translate-y-0">
+            Automática
+          </p>
+        </div>
+      </button>
+         
         </div>
       </div>
     </section>
