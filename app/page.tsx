@@ -210,9 +210,7 @@ export default function Page() {
       <LazyMount minHeight={700} unmountOnHide>
         <FluidGlassLens />
       </LazyMount>
-       <div id="contact" className="scroll-mt-20">
       <Footer />
-       </div>
     </>
   );
 }

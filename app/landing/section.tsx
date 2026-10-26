@@ -10,7 +10,7 @@ export const TextParallaxContentExample = () => {
       <TextParallaxContent
         imgUrl="/img/hero/hero1.jpg"
         subheading="Análisis inteligente Selectia"
-        heading="Talento con más afinidad para el puesto"
+        heading="Talento"
         >
         <ExampleContent />
       </TextParallaxContent>
